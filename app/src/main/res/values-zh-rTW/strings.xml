@@ -661,4 +661,5 @@
     <string name="download_new_chapters">下載新的漫畫章節</string>
     <string name="enable_all_sources">啟用所有漫畫來源</string>
     <string name="all_sources_enabled">所有漫畫來源已啟用</string>
+    <string name="auto_double_foldable">摺疊設備自動雙頁</string>
 </resources>

@@ -155,6 +155,9 @@ dependencies {
 	implementation libs.androidx.work.runtime
 	implementation libs.guava
 
+    // Foldable/Window layout
+    implementation libs.androidx.window
+
 	implementation libs.androidx.room.runtime
 	implementation libs.androidx.room.ktx
 	ksp libs.androidx.room.compiler

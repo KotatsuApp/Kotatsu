@@ -866,4 +866,5 @@
     <string name="pull_bottom_no_next">到底了</string>
     <string name="enable_pull_gesture_title">启用推拉手势</string>
     <string name="enable_pull_gesture_summary">条漫模式下使用推拉手势切换章节</string>
+    <string name="auto_double_foldable">折叠设备自动双页</string>
 </resources>

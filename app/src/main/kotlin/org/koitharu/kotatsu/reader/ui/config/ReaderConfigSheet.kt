@@ -79,21 +79,23 @@ class ReaderConfigSheet :
 		return SheetReaderConfigBinding.inflate(inflater, container, false)
 	}
 
-	override fun onViewBindingCreated(
-		binding: SheetReaderConfigBinding,
-		savedInstanceState: Bundle?,
-	) {
-		super.onViewBindingCreated(binding, savedInstanceState)
-		observeScreenOrientation()
-		binding.buttonStandard.isChecked = mode == ReaderMode.STANDARD
-		binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
-		binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
-		binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
-		binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
-		binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
-		binding.sliderDoubleSensitivity.setValueRounded(settings.readerDoublePagesSensitivity * 100f)
-		binding.sliderDoubleSensitivity.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
-        binding.adjustSensitivitySlider(withAnimation = false)
+		override fun onViewBindingCreated(
+			binding: SheetReaderConfigBinding,
+			savedInstanceState: Bundle?,
+		) {
+			super.onViewBindingCreated(binding, savedInstanceState)
+			observeScreenOrientation()
+			binding.buttonStandard.isChecked = mode == ReaderMode.STANDARD
+			binding.buttonReversed.isChecked = mode == ReaderMode.REVERSED
+			binding.buttonWebtoon.isChecked = mode == ReaderMode.WEBTOON
+			binding.buttonVertical.isChecked = mode == ReaderMode.VERTICAL
+			binding.switchDoubleReader.isChecked = settings.isReaderDoubleOnLandscape
+			binding.switchDoubleReader.isEnabled = mode == ReaderMode.STANDARD || mode == ReaderMode.REVERSED
+			binding.switchDoubleFoldable.isChecked = settings.isReaderDoubleOnFoldable
+			binding.switchDoubleFoldable.isEnabled = binding.switchDoubleReader.isEnabled
+			binding.sliderDoubleSensitivity.setValueRounded(settings.readerDoublePagesSensitivity * 100f)
+			binding.sliderDoubleSensitivity.setLabelFormatter(IntPercentLabelFormatter(binding.root.context))
+			binding.adjustSensitivitySlider(withAnimation = false)
 
 		binding.checkableGroup.addOnButtonCheckedListener(this)
 		binding.buttonSavePage.setOnClickListener(this)
@@ -102,9 +104,10 @@ class ReaderConfigSheet :
 		binding.buttonImageServer.setOnClickListener(this)
 		binding.buttonColorFilter.setOnClickListener(this)
 		binding.buttonScrollTimer.setOnClickListener(this)
-		binding.buttonBookmark.setOnClickListener(this)
-		binding.switchDoubleReader.setOnCheckedChangeListener(this)
-		binding.sliderDoubleSensitivity.addOnChangeListener(this)
+			binding.buttonBookmark.setOnClickListener(this)
+			binding.switchDoubleReader.setOnCheckedChangeListener(this)
+			binding.switchDoubleFoldable.setOnCheckedChangeListener(this)
+			binding.sliderDoubleSensitivity.addOnChangeListener(this)
 
 		viewModel.isBookmarkAdded.observe(viewLifecycleOwner) {
 			binding.buttonBookmark.setText(if (it) R.string.bookmark_remove else R.string.bookmark_add)
@@ -171,19 +174,25 @@ class ReaderConfigSheet :
 		}
 	}
 
-	override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-		when (buttonView.id) {
+		override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+			when (buttonView.id) {
 			R.id.switch_screen_lock_rotation -> {
 				orientationHelper.isLocked = isChecked
 			}
 
-			R.id.switch_double_reader -> {
-				settings.isReaderDoubleOnLandscape = isChecked
-				viewBinding?.adjustSensitivitySlider(withAnimation = true)
-				findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
+				R.id.switch_double_reader -> {
+					settings.isReaderDoubleOnLandscape = isChecked
+					viewBinding?.adjustSensitivitySlider(withAnimation = true)
+					findParentCallback(Callback::class.java)?.onDoubleModeChanged(isChecked)
+				}
+
+				R.id.switch_double_foldable -> {
+					settings.isReaderDoubleOnFoldable = isChecked
+					// Re-evaluate double-page considering foldable state and current manual toggle
+					findParentCallback(Callback::class.java)?.onDoubleModeChanged(settings.isReaderDoubleOnLandscape)
+				}
 			}
 		}
-	}
 
 	override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
 		settings.readerDoublePagesSensitivity = value / 100f
@@ -205,9 +214,10 @@ class ReaderConfigSheet :
 			else -> return
 		}
 		viewBinding?.run {
-            switchDoubleReader.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
-            adjustSensitivitySlider(withAnimation = true)
-        }
+			switchDoubleReader.isEnabled = newMode == ReaderMode.STANDARD || newMode == ReaderMode.REVERSED
+			switchDoubleFoldable.isEnabled = switchDoubleReader.isEnabled
+			adjustSensitivitySlider(withAnimation = true)
+		}
 		if (newMode == mode) {
 			return
 		}
@@ -242,12 +252,18 @@ class ReaderConfigSheet :
 	}
 
     private fun SheetReaderConfigBinding.adjustSensitivitySlider(withAnimation: Boolean) {
-        val isSliderVisible = switchDoubleReader.isEnabled && switchDoubleReader.isChecked
-        if (isSliderVisible != sliderDoubleSensitivity.isVisible && withAnimation) {
+        val isSubOptionsVisible = switchDoubleReader.isEnabled && switchDoubleReader.isChecked
+        val needTransition = withAnimation && (
+            (isSubOptionsVisible != sliderDoubleSensitivity.isVisible) ||
+            (isSubOptionsVisible != textDoubleSensitivity.isVisible) ||
+            (isSubOptionsVisible != switchDoubleFoldable.isVisible)
+        )
+        if (needTransition) {
             TransitionManager.beginDelayedTransition(layoutMain)
         }
-        sliderDoubleSensitivity.isVisible = isSliderVisible
-        textDoubleSensitivity.isVisible = isSliderVisible
+        sliderDoubleSensitivity.isVisible = isSubOptionsVisible
+        textDoubleSensitivity.isVisible = isSubOptionsVisible
+        switchDoubleFoldable.isVisible = isSubOptionsVisible
     }
 
 	interface Callback {
