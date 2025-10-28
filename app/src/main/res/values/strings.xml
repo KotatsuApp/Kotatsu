@@ -580,7 +580,6 @@
     <string name="config_reset_confirm">Reset settings to default values? This action cannot be undone.</string>
     <string name="use_two_pages_landscape">Use two pages layout on landscape orientation (beta)</string>
     <string name="auto_double_foldable">Auto Two-Page On Foldable</string>
-    <string name="auto_double_foldable_summary">Enable two-page layout when device has a separating hinge</string>
     <string name="two_page_scroll_sensitivity">Two-Page Scroll Sensitivity</string>
     <string name="default_webtoon_zoom_out">Default webtoon zoom out</string>
     <string name="fullscreen_mode">Fullscreen mode</string>
