@@ -878,4 +878,8 @@
     <string name="data_removal">Xoá dữ liệu</string>
     <string name="privacy">Quyền riêng tư</string>
     <string name="source_broken_warning">Nguồn đọc này đã được gắn là \"Không còn sử dụng được\". Một vài tính năng có thể sẽ không hoạt động</string>
+    <string name="frequency_every_6_hours">6 tiếng một lần</string>
+    <string name="download_default_directory">Đường dẫn mặc định để tải truyện về thiết bị</string>
+    <string name="private_app_directory_warning">Đường dẫn này với tất cả dữ liệu của ứng dụng sẽ bị xóa nếu bạn gỡ ứng dụng Kotatsu</string>
+    <string name="available_pattern">Hiện có sẵn %1$s</string>
 </resources>
