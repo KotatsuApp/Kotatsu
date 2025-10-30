@@ -879,4 +879,8 @@
     <string name="data_removal">Penghapusan data</string>
     <string name="source_broken_warning">Sumber manga ini telah ditandai rusak. Beberapa fitur mungkin tidak berfungsi</string>
     <string name="privacy">Pribadi</string>
+    <string name="frequency_every_6_hours">Setiap 6 jam</string>
+    <string name="download_default_directory">Direktori default untuk mengunduh manga</string>
+    <string name="private_app_directory_warning">Direktori ini beserta semua datanya akan dihapus jika Anda menghapus aplikasi</string>
+    <string name="available_pattern">%1$s tersedia</string>
 </resources>
