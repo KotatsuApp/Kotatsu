@@ -62,6 +62,8 @@ class SearchViewModel @Inject constructor(
 	val kind = savedStateHandle.get<SearchKind>(AppRouter.KEY_KIND) ?: SearchKind.SIMPLE
 
 	private var includeDisabledSources = MutableStateFlow(false)
+	private var pinnedOnly = MutableStateFlow(false)
+	private var hideEmpty = MutableStateFlow(false)
 	private val results = MutableStateFlow<List<SearchResultsListModel>>(emptyList())
 
 	private var searchJob: Job? = null
@@ -70,9 +72,15 @@ class SearchViewModel @Inject constructor(
 		results,
 		isLoading.dropWhile { !it },
 		includeDisabledSources,
-	) { list, loading, includeDisabled ->
+		hideEmpty,
+	) { list, loading, includeDisabled, hideEmptyVal ->
+		val filteredList = if (hideEmptyVal) {
+			list.filter { it.list.isNotEmpty() }
+		} else {
+			list
+		}
 		when {
-			list.isEmpty() -> listOf(
+			filteredList.isEmpty() -> listOf(
 				when {
 					loading -> LoadingState
 					else -> EmptyState(
@@ -84,9 +92,9 @@ class SearchViewModel @Inject constructor(
 				},
 			)
 
-			loading -> list + LoadingFooter()
-			includeDisabled -> list
-			else -> list + ButtonFooter(R.string.search_disabled_sources)
+			loading -> filteredList + LoadingFooter()
+			includeDisabled -> filteredList
+			else -> filteredList + ButtonFooter(R.string.search_disabled_sources)
 		}
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, listOf(LoadingState))
 
@@ -114,6 +122,17 @@ class SearchViewModel @Inject constructor(
 		doSearch()
 	}
 
+	fun setPinnedOnly(value: Boolean) {
+		if (pinnedOnly.value != value) {
+			pinnedOnly.value = value
+			retry()
+		}
+	}
+
+	fun setHideEmpty(value: Boolean) {
+		hideEmpty.value = value
+	}
+
 	fun continueSearch() {
 		if (includeDisabledSources.value) {
 			return
@@ -122,8 +141,12 @@ class SearchViewModel @Inject constructor(
 		searchJob = launchLoadingJob(Dispatchers.Default) {
 			includeDisabledSources.value = true
 			prevJob?.join()
-			val sources = sourcesRepository.getDisabledSources()
-				.sortedByDescending { it.priority() }
+			val sources = if (pinnedOnly.value) {
+				emptyList()
+			} else {
+				sourcesRepository.getDisabledSources()
+					.sortedByDescending { it.priority() }
+			}
 			val semaphore = Semaphore(MAX_PARALLELISM)
 			sources.map { source ->
 				launch {
@@ -142,7 +165,11 @@ class SearchViewModel @Inject constructor(
 			appendResult(searchHistory())
 			appendResult(searchFavorites())
 			appendResult(searchLocal())
-			val sources = sourcesRepository.getEnabledSources()
+			val sources = if (pinnedOnly.value) {
+				sourcesRepository.getPinnedSources().toList()
+			} else {
+				sourcesRepository.getEnabledSources()
+			}
 			val semaphore = Semaphore(MAX_PARALLELISM)
 			sources.map { source ->
 				launch {

@@ -94,7 +94,7 @@ class SearchActivity :
 		setDisplayHomeAsUp(isEnabled = true, showUpAsClose = false)
 		supportActionBar?.setSubtitle(R.string.search_results)
 
-		addMenuProvider(SearchKindMenuProvider(this, viewModel.query, viewModel.kind))
+		addMenuProvider(SearchKindMenuProvider(this, viewModel, viewModel.query, viewModel.kind))
 
 		viewModel.list.observe(this, adapter)
 		viewModel.onError.observeEvent(this, SnackbarErrorObserver(viewBinding.recyclerView, null))

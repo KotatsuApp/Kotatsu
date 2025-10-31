@@ -33,6 +33,20 @@
 					android:title="@string/genre" />
 
 			</group>
+
+			<group android:id="@+id/group_search_filters">
+
+				<item
+					android:id="@+id/action_filter_pinned_only"
+					android:checkable="true"
+					android:title="@string/pinned_sources_only" />
+
+				<item
+					android:id="@+id/action_filter_hide_empty"
+					android:checkable="true"
+					android:title="@string/hide_empty_sources" />
+
+			</group>
 		</menu>
 
 	</item>
