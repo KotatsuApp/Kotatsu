@@ -16,6 +16,7 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.browser.BrowserActivity
 import org.koitharu.kotatsu.browser.cloudflare.CloudFlareActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
+import org.koitharu.kotatsu.core.exceptions.EmptyMangaException
 import org.koitharu.kotatsu.core.exceptions.InteractiveActionRequiredException
 import org.koitharu.kotatsu.core.exceptions.ProxyConfigException
 import org.koitharu.kotatsu.core.exceptions.UnsupportedSourceException
@@ -25,6 +26,7 @@ import org.koitharu.kotatsu.core.prefs.AppSettings
 import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.util.ext.isHttpUrl
 import org.koitharu.kotatsu.core.util.ext.restartApplication
+import org.koitharu.kotatsu.details.ui.pager.EmptyMangaReason
 import org.koitharu.kotatsu.parsers.exception.AuthRequiredException
 import org.koitharu.kotatsu.parsers.exception.NotFoundException
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -80,6 +82,16 @@ class ExceptionResolver private constructor(
 
             is NotFoundException -> {
                 openInBrowser(e.url)
+                false
+            }
+
+            is EmptyMangaException -> {
+                when (e.reason) {
+                    EmptyMangaReason.NO_CHAPTERS -> openAlternatives(e.manga)
+                    EmptyMangaReason.LOADING_ERROR -> Unit
+                    EmptyMangaReason.RESTRICTED -> host.router.openBrowser(e.manga)
+                    else -> Unit
+                }
                 false
             }
 
@@ -228,6 +240,12 @@ class ExceptionResolver private constructor(
             is ProxyConfigException -> R.string.settings
 
             is InteractiveActionRequiredException -> R.string._continue
+
+            is EmptyMangaException -> when (e.reason) {
+                EmptyMangaReason.RESTRICTED -> if (e.manga.publicUrl.isHttpUrl()) R.string.open_in_browser else 0
+                EmptyMangaReason.NO_CHAPTERS -> R.string.alternatives
+                else -> 0
+            }
 
             else -> 0
         }
