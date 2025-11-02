@@ -100,7 +100,7 @@ class ChaptersPagesSheet : BaseAdaptiveSheet<SheetChaptersPagesBinding>(),
 
 	override fun onStateChanged(sheet: View, newState: Int) {
         val binding = viewBinding ?: return
-        binding.layoutTouchBlock.isTouchEventsAllowed = newState != STATE_COLLAPSED
+        binding.layoutTouchBlock.isTouchEventsAllowed = dialog != null || newState != STATE_COLLAPSED
         if (newState == STATE_DRAGGING || newState == STATE_SETTLING) {
             return
         }
