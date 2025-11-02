@@ -123,7 +123,6 @@
     <string name="updates_feed_cleared">Cleared</string>
     <string name="rotate_screen">Rotate screen</string>
     <string name="update">Update</string>
-    <string name="feed_will_update_soon">Feed update will start soon</string>
     <string name="track_sources">Look for updates</string>
     <string name="dont_check">Don\'t check</string>
     <string name="enter_password">Enter password</string>
@@ -185,8 +184,6 @@
     <string name="read_more">Read more</string>
     <string name="queued">Queued</string>
     <string name="chapter_is_missing">The chapter is missing</string>
-    <string name="about_app_translation_summary">Translate this app</string>
-    <string name="about_app_translation">Translation</string>
     <string name="auth_complete">Authorized</string>
     <string name="auth_not_supported_by">Logging in on %s is not supported</string>
     <string name="text_clear_cookies_prompt">You will be logged out from all sources</string>
@@ -267,8 +264,6 @@
     <string name="detect_reader_mode_summary">Automatically detect if manga is webtoon</string>
     <string name="disable_battery_optimization">Disable battery optimization</string>
     <string name="disable_battery_optimization_summary">Helps with background updates checks</string>
-    <string name="crash_text">Something went wrong. Please submit a bug report to the developers to help us fix it.</string>
-    <string name="send">Send</string>
     <string name="status_planned">Planned</string>
     <string name="status_reading">Reading</string>
     <string name="status_re_reading">Re-reading</string>
@@ -352,9 +347,6 @@
     <string name="prefetch_content">Content preloading</string>
     <string name="mark_as_current">Mark as current</string>
     <string name="language">Language</string>
-    <string name="share_logs">Share logs</string>
-    <string name="enable_logging">Enable logging</string>
-    <string name="enable_logging_summary">Record some actions for debug purposes. Don\'t turn it on if you\'re not sure what you\'re doing</string>
     <string name="show_suspicious_content">Show suspicious content</string>
     <string name="theme_name_dynamic">Dynamic</string>
     <string name="theme_name_expressive">Expressive (Test)</string>
@@ -370,8 +362,6 @@
     <string name="nothing_here">There is nothing here</string>
     <string name="scrobbling_empty_hint">To track reading progress, select Menu → Track on the manga details screen.</string>
     <string name="services">Services</string>
-    <string name="allow_unstable_updates">Allow unstable updates</string>
-    <string name="allow_unstable_updates_summary">Receive notifications about unstable builds</string>
     <string name="download_started">Download started</string>
     <string name="got_it">Got it</string>
     <string name="sources_reorder_tip">Tap and hold on an item to reorder them</string>
@@ -715,8 +705,6 @@
     <string name="popularity">Popularity</string>
     <string name="scrobbler_auth_required">Sign in to %s to continue</string>
     <string name="scrobbler_auth_intro">Sign in to set up integration with %s. This will allow you to track your manga reading progress and status</string>
-    <string name="unstable_feature">Unstable feature</string>
-    <string name="unstable_feature_summary">This function is experimental. Please make sure you have a backup to avoid data loss</string>
     <string name="downloads_background">Background downloads</string>
     <string name="download_new_chapters">Download new chapters</string>
     <string name="manga_with_downloaded_chapters">Manga with downloaded chapters</string>
@@ -755,7 +743,6 @@
     <string name="debug">Debug</string>
     <string name="source_code">Source code</string>
     <string name="user_manual">User manual</string>
-    <string name="telegram_group">Telegram group</string>
     <string name="error_image_format">Unsupported image format: %s</string>
     <string name="error_not_image">Invalid format: expected image but got %s</string>
     <string name="start_download">Start download</string>
@@ -855,8 +842,6 @@
     <string name="incognito_for_nsfw">Incognito mode for NSFW manga</string>
     <string name="additional_action_required">Additional action is required</string>
     <string name="hide_from_main_screen">Hide from main screen</string>
-    <string name="changelog">Changelog</string>
-    <string name="changelog_summary">Changes history for recently released versions</string>
     <string name="collapse">Collapse</string>
     <string name="expand">Expand</string>
     <string name="adblock">Block ads in browser</string>
@@ -875,15 +860,7 @@
     <string name="main_screen_fab">Show floating Continue button</string>
     <string name="main_screen_fab_summary">Allows to continue reading in a one click. This button will not appear in incognito mode or when the history is empty</string>
     <string name="error_corrupted_zip">Corrupted ZIP archive (%s)</string>
-    <string name="discord" translatable="false">Discord</string>
-    <string name="discord_rpc">Discord Rich Presence</string>
-    <string name="discord_token">Discord Token</string>
-    <string name="discord_token_summary">Enter your Discord Token to enable Rich Presence</string>
-    <string name="discord_token_description">Enter your Discord Token or click %s to get it using browser</string>
-    <string name="discord_token_hint">Paste your Discord Token here</string>
-    <string name="discord_rpc_summary">Show your reading status on Discord</string>
     <string name="obtain">Obtain</string>
-    <string name="discord_rpc_description">Reading manga on Kotatsu - a manga reader app</string>
     <string name="reading_s">Reading %s</string>
     <string name="read_on_s">Read on %s</string>
     <string name="rpc_skip_nsfw_summary">Do not use RPC for adult content</string>
@@ -904,6 +881,8 @@
     <string name="data_removal">Data removal</string>
     <string name="privacy">Privacy</string>
     <string name="source_broken_warning">This manga source has been marked as broken. Some features may not work</string>
+    <string name="delete_all_chapters">Delete all chapters</string>
+    <string name="disable_broken_sources">Disable broken sources</string>
     <string name="download_default_directory">Default directory for downloading manga</string>
     <string name="private_app_directory_warning">This directory with all data will be deleted if you uninstall the application</string>
     <string name="available_pattern">%1$s available</string>

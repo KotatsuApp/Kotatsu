@@ -51,7 +51,6 @@
 		android:backupAgent="org.koitharu.kotatsu.backups.domain.AppBackupAgent"
 		android:dataExtractionRules="@xml/backup_rules"
 		android:enableOnBackInvokedCallback="@bool/is_predictive_back_enabled"
-		android:extractNativeLibs="true"
 		android:fullBackupContent="@xml/backup_content"
 		android:fullBackupOnly="true"
 		android:hasFragileUserData="true"
@@ -289,9 +288,6 @@
 				<data android:mimeType="image/*" />
 			</intent-filter>
 		</activity>
-		<activity
-			android:name="org.koitharu.kotatsu.scrobbling.discord.ui.DiscordAuthActivity"
-			android:label="@string/discord" />
 
 		<service
 			android:name="androidx.work.impl.foreground.SystemForegroundService"
@@ -369,9 +365,6 @@
 			android:name="org.koitharu.kotatsu.details.service.MangaPrefetchService"
 			android:exported="false"
 			android:label="@string/prefetch_content" />
-		<service
-			android:name="org.koitharu.kotatsu.browser.AdListUpdateService"
-			android:exported="false" />
 
 		<provider
 			android:name="org.koitharu.kotatsu.search.ui.MangaSuggestionsProvider"
@@ -437,13 +430,6 @@
 			<meta-data
 				android:name="android.appwidget.provider"
 				android:resource="@xml/widget_recent" />
-		</receiver>
-		<receiver
-			android:name="org.koitharu.kotatsu.core.ErrorReporterReceiver"
-			android:exported="false">
-			<intent-filter>
-				<action android:name="${applicationId}.action.REPORT_ERROR" />
-			</intent-filter>
 		</receiver>
 
 		<meta-data

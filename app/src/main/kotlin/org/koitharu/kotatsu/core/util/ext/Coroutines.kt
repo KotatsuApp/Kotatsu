@@ -9,8 +9,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import org.koitharu.kotatsu.core.util.AcraCoroutineErrorHandler
 import org.koitharu.kotatsu.core.util.RetainedLifecycleCoroutineScope
 import org.koitharu.kotatsu.parsers.util.cancelAll
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
@@ -19,7 +17,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 
 val processLifecycleScope: CoroutineScope
-	get() = ProcessLifecycleOwner.get().lifecycleScope + AcraCoroutineErrorHandler()
+	get() = ProcessLifecycleOwner.get().lifecycleScope
 
 val RetainedLifecycle.lifecycleScope: RetainedLifecycleCoroutineScope
 	inline get() = RetainedLifecycleCoroutineScope(this)

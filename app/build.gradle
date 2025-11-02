@@ -8,8 +8,6 @@ plugins {
 	id 'dagger.hilt.android.plugin'
 	id 'androidx.room'
 	id 'org.jetbrains.kotlin.plugin.serialization'
-	// enable if needed
-	// id 'dev.reformator.stacktracedecoroutinator'
 }
 
 android {
@@ -21,8 +19,8 @@ android {
 		applicationId 'org.koitharu.kotatsu'
 		minSdk = 23
 		targetSdk = 36
-		versionCode = 1033
-		versionName = '9.4.1'
+		versionCode = 1035
+		versionName = '9.4.1.1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -39,6 +37,15 @@ android {
 		}
 		resValue 'string', 'tg_backup_bot_token', localProperties.getProperty('tg_backup_bot_token', '')
 	}
+
+	signingConfigs {
+		release {
+			storeFile file("key")
+			storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+		}
+	}
 	buildTypes {
 		debug {
 			applicationIdSuffix = '.debug'
@@ -47,10 +54,7 @@ android {
 			minifyEnabled true
 			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-		}
-		nightly {
-			initWith release
-			applicationIdSuffix = '.nightly'
+			signingConfig signingConfigs.release
 		}
 	}
 	buildFeatures {
@@ -60,9 +64,11 @@ android {
 	packagingOptions {
 		resources {
 			excludes += [
-				'META-INF/README.md',
-				'META-INF/NOTICE.md'
+				'META-INF/README.md'
 			]
+		}
+		jniLibs {
+			useLegacyPackaging true
 		}
 	}
 	sourceSets {
@@ -105,25 +111,23 @@ android {
 			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
-	applicationVariants.configureEach { variant ->
-		if (variant.name == 'nightly') {
-			variant.outputs.each { output ->
-				def now = LocalDateTime.now()
-				output.versionCodeOverride = now.format("yyMMdd").toInteger()
-				output.versionNameOverride = 'N' + now.format("yyyyMMdd")
-			}
-		}
-	}
+    splits {
+        abi {
+            enable true
+            reset()
+            //noinspection ChromeOsAbiSupport
+            include 'arm64-v8a', 'x86_64', 'armeabi-v7a'
+            universalApk false
+        }
+    }
 }
 dependencies {
 	def parsersVersion = libs.versions.parsers.get()
 	if (System.properties.containsKey('parsersVersionOverride')) {
-		// usage:
-		// -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 		parsersVersion = System.getProperty('parsersVersionOverride')
 	}
 	//noinspection UseTomlInstead
-	implementation("com.github.KotatsuApp:kotatsu-parsers:$parsersVersion") {
+	implementation("com.github.vtorres-t:kotatsu-parsers:$parsersVersion") {
 		exclude group: 'org.json', module: 'json'
 	}
 
@@ -184,15 +188,10 @@ dependencies {
 	implementation libs.ssiv
 	implementation libs.disk.lru.cache
 	implementation libs.markwon
-	implementation libs.kizzyrpc
-
-	implementation libs.acra.http
-	implementation libs.acra.dialog
 
 	implementation libs.conscrypt.android
 
 	debugImplementation libs.leakcanary.android
-	nightlyImplementation libs.leakcanary.android
 	debugImplementation libs.workinspector
 
 	testImplementation libs.junit

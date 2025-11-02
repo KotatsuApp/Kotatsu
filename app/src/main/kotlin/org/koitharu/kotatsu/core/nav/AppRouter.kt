@@ -111,8 +111,8 @@ import java.io.File
 import androidx.appcompat.R as appcompatR
 
 class AppRouter private constructor(
-    private val activity: FragmentActivity?,
-    private val fragment: Fragment?,
+	private val activity: FragmentActivity?,
+	private val fragment: Fragment?,
 ) {
 
     constructor(activity: FragmentActivity) : this(activity, null)
@@ -287,11 +287,7 @@ class AppRouter private constructor(
         startActivity(sourcesSettingsIntent(contextOrNull() ?: return))
     }
 
-    fun openDiscordSettings() {
-        startActivity(discordSettingsIntent(contextOrNull() ?: return))
-    }
-
-    fun openReaderTapGridSettings() = startActivity(ReaderTapGridConfigActivity::class.java)
+	fun openReaderTapGridSettings() = startActivity(ReaderTapGridConfigActivity::class.java)
 
     fun openScrobblerSettings(scrobbler: ScrobblerService) {
         startActivity(
@@ -631,14 +627,14 @@ class AppRouter private constructor(
         exception.printStackTraceDebug()
     }.getOrNull()
 
-    private fun shareLink(link: String, title: String) {
-        val context = contextOrNull() ?: return
-        ShareCompat.IntentBuilder(context)
-            .setText(link)
-            .setType(TYPE_TEXT)
-            .setChooserTitle(context.getString(R.string.share_s, title.ellipsize(12)))
-            .startChooser()
-    }
+	private fun shareLink(link: String, title: String) {
+		val context = contextOrNull() ?: return
+		ShareCompat.IntentBuilder(context)
+			.setText(link)
+			.setType(TYPE_TEXT)
+			.setChooserTitle(context.getString(R.string.share_s, title.ellipsize(12)))
+			.startChooser()
+	}
 
     private fun shareFile(file: File) { // TODO directory sharing support
         val context = contextOrNull() ?: return
@@ -755,13 +751,9 @@ class AppRouter private constructor(
             Intent(context, SettingsActivity::class.java)
                 .setAction(ACTION_PERIODIC_BACKUP)
 
-        fun discordSettingsIntent(context: Context) =
-            Intent(context, SettingsActivity::class.java)
-                .setAction(ACTION_MANAGE_DISCORD)
-
-        fun proxySettingsIntent(context: Context) =
-            Intent(context, SettingsActivity::class.java)
-                .setAction(ACTION_PROXY)
+		fun proxySettingsIntent(context: Context) =
+			Intent(context, SettingsActivity::class.java)
+				.setAction(ACTION_PROXY)
 
         fun historySettingsIntent(context: Context) =
             Intent(context, SettingsActivity::class.java)
@@ -804,48 +796,47 @@ class AppRouter private constructor(
             else -> true
         }
 
-        fun shortMangaUrl(mangaId: Long): Uri = Uri.Builder()
-            .scheme("kotatsu")
-            .path("manga")
-            .appendQueryParameter("id", mangaId.toString())
-            .build()
+		fun shortMangaUrl(mangaId: Long): Uri = Uri.Builder()
+			.scheme("kotatsu")
+			.path("manga")
+			.appendQueryParameter("id", mangaId.toString())
+			.build()!!
 
-        const val KEY_DATA = "data"
-        const val KEY_ENTRIES = "entries"
-        const val KEY_ERROR = "error"
-        const val KEY_EXCLUDE = "exclude"
-        const val KEY_FILE = "file"
-        const val KEY_FILTER = "filter"
-        const val KEY_ID = "id"
-        const val KEY_INDEX = "index"
-        const val KEY_IS_BOTTOMTAB = "is_btab"
-        const val KEY_KIND = "kind"
-        const val KEY_LIST_SECTION = "list_section"
-        const val KEY_MANGA = "manga"
-        const val KEY_MANGA_LIST = "manga_list"
-        const val KEY_PAGES = "pages"
-        const val KEY_PREVIEW = "preview"
-        const val KEY_QUERY = "query"
-        const val KEY_READER_MODE = "reader_mode"
-        const val KEY_SORT_ORDER = "sort_order"
-        const val KEY_SOURCE = "source"
-        const val KEY_TAB = "tab"
-        const val KEY_TITLE = "title"
-        const val KEY_URL = "url"
-        const val KEY_USER_AGENT = "user_agent"
+		const val KEY_DATA = "data"
+		const val KEY_ENTRIES = "entries"
+		const val KEY_ERROR = "error"
+		const val KEY_EXCLUDE = "exclude"
+		const val KEY_FILE = "file"
+		const val KEY_FILTER = "filter"
+		const val KEY_ID = "id"
+		const val KEY_INDEX = "index"
+		const val KEY_IS_BOTTOMTAB = "is_btab"
+		const val KEY_KIND = "kind"
+		const val KEY_LIST_SECTION = "list_section"
+		const val KEY_MANGA = "manga"
+		const val KEY_MANGA_LIST = "manga_list"
+		const val KEY_PAGES = "pages"
+		const val KEY_PREVIEW = "preview"
+		const val KEY_QUERY = "query"
+		const val KEY_READER_MODE = "reader_mode"
+		const val KEY_SORT_ORDER = "sort_order"
+		const val KEY_SOURCE = "source"
+		const val KEY_TAB = "tab"
+		const val KEY_TITLE = "title"
+		const val KEY_URL = "url"
+		const val KEY_USER_AGENT = "user_agent"
 
-        const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
-        const val ACTION_MANAGE_DOWNLOADS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DOWNLOADS"
-        const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
-        const val ACTION_MANGA_EXPLORE = "${BuildConfig.APPLICATION_ID}.action.EXPLORE_MANGA"
-        const val ACTION_PROXY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PROXY"
-        const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
-        const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
-        const val ACTION_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES"
-        const val ACTION_MANAGE_DISCORD = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DISCORD"
-        const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
-        const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
-        const val ACTION_PERIODIC_BACKUP = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PERIODIC_BACKUP"
+		const val ACTION_HISTORY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_HISTORY"
+		const val ACTION_MANAGE_DOWNLOADS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_DOWNLOADS"
+		const val ACTION_MANAGE_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES_LIST"
+		const val ACTION_MANGA_EXPLORE = "${BuildConfig.APPLICATION_ID}.action.EXPLORE_MANGA"
+		const val ACTION_PROXY = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PROXY"
+		const val ACTION_READER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_READER_SETTINGS"
+		const val ACTION_SOURCE = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCE_SETTINGS"
+		const val ACTION_SOURCES = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SOURCES"
+		const val ACTION_SUGGESTIONS = "${BuildConfig.APPLICATION_ID}.action.MANAGE_SUGGESTIONS"
+		const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
+		const val ACTION_PERIODIC_BACKUP = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PERIODIC_BACKUP"
 
         private const val ACCOUNT_KEY = "account"
         private const val ACTION_ACCOUNT_SYNC_SETTINGS = "android.settings.ACCOUNT_SYNC_SETTINGS"
