@@ -20,7 +20,7 @@ android {
 		minSdk = 23
 		targetSdk = 36
 		versionCode = 1035
-		versionName = '9.4.0.1'
+		versionName = '9.4.1.1'
 		generatedDensities = []
 		testInstrumentationRunner 'org.koitharu.kotatsu.HiltTestRunner'
 		ksp {
@@ -111,15 +111,15 @@ android {
 			freeCompilerArgs += ['-opt-in=org.koitharu.kotatsu.parsers.InternalParsersApi']
 		}
 	}
-	splits {
-		abi {
-			enable true
-			reset()
-			//noinspection ChromeOsAbiSupport
-			include 'arm64-v8a', 'x86_64', 'armeabi-v7a'
-			universalApk false
-		}
-	}
+    splits {
+        abi {
+            enable true
+            reset()
+            //noinspection ChromeOsAbiSupport
+            include 'arm64-v8a', 'x86_64', 'armeabi-v7a'
+            universalApk false
+        }
+    }
 }
 dependencies {
 	def parsersVersion = libs.versions.parsers.get()
@@ -158,6 +158,9 @@ dependencies {
 
 	implementation libs.androidx.work.runtime
 	implementation libs.guava
+
+    // Foldable/Window layout
+    implementation libs.androidx.window
 
 	implementation libs.androidx.room.runtime
 	implementation libs.androidx.room.ktx

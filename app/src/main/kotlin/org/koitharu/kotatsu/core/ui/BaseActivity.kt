@@ -33,7 +33,6 @@ import androidx.appcompat.R as appcompatR
 
 abstract class BaseActivity<B : ViewBinding> :
 	AppCompatActivity(),
-	ExceptionResolver.Host,
 	OnApplyWindowInsetsListener,
 	ScreenshotPolicyHelper.ContentContainer {
 
@@ -86,10 +85,6 @@ abstract class BaseActivity<B : ViewBinding> :
 
 	@Deprecated("Use ViewBinding", level = DeprecationLevel.ERROR)
 	override fun setContentView(view: View?) = throw UnsupportedOperationException()
-
-	override fun getContext() = this
-
-	override fun getChildFragmentManager(): FragmentManager = supportFragmentManager
 
 	protected fun setContentView(binding: B) {
 		this.viewBinding = binding

@@ -11,8 +11,9 @@ import org.koitharu.kotatsu.search.domain.SearchKind
 
 class SearchKindMenuProvider(
 	private val activity: SearchActivity,
+	private val viewModel: SearchViewModel,
 	private val query: String,
-	private val kind: SearchKind
+	private val kind: SearchKind,
 ) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -32,6 +33,20 @@ class SearchKindMenuProvider(
 	}
 
 	override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+		when (menuItem.itemId) {
+			R.id.action_filter_pinned_only -> {
+				menuItem.isChecked = !menuItem.isChecked
+				viewModel.setPinnedOnly(menuItem.isChecked)
+				return true
+			}
+
+			R.id.action_filter_hide_empty -> {
+				menuItem.isChecked = !menuItem.isChecked
+				viewModel.setHideEmpty(menuItem.isChecked)
+				return true
+			}
+		}
+
 		val newKind = when (menuItem.itemId) {
 			R.id.action_kind_simple -> SearchKind.SIMPLE
 			R.id.action_kind_title -> SearchKind.TITLE

@@ -207,6 +207,8 @@
     <string name="disabled">Disabled</string>
     <string name="reset_filter">Reset filter</string>
     <string name="enter_name">Enter name</string>
+    <string name="pinned_sources_only">Pinned sources only</string>
+    <string name="hide_empty_sources">Hide empty sources</string>
     <string name="onboard_text">Select languages which you want to read manga. You can change it later in settings.</string>
     <string name="never">Never</string>
     <string name="only_using_wifi">Only on Wi-Fi</string>
@@ -569,6 +571,7 @@
     <string name="none">None</string>
     <string name="config_reset_confirm">Reset settings to default values? This action cannot be undone.</string>
     <string name="use_two_pages_landscape">Use two pages layout on landscape orientation (beta)</string>
+    <string name="auto_double_foldable">Auto Two-Page On Foldable</string>
     <string name="two_page_scroll_sensitivity">Two-Page Scroll Sensitivity</string>
     <string name="default_webtoon_zoom_out">Default webtoon zoom out</string>
     <string name="fullscreen_mode">Fullscreen mode</string>

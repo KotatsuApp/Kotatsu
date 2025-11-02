@@ -115,511 +115,517 @@ class AppRouter private constructor(
 	private val fragment: Fragment?,
 ) {
 
-	constructor(activity: FragmentActivity) : this(activity, null)
+    constructor(activity: FragmentActivity) : this(activity, null)
 
-	constructor(fragment: Fragment) : this(null, fragment)
+    constructor(fragment: Fragment) : this(null, fragment)
 
-	private val settings: AppSettings by lazy {
-		EntryPointAccessors.fromApplication<AppRouterEntryPoint>(checkNotNull(contextOrNull())).settings
-	}
+    private val settings: AppSettings by lazy {
+        EntryPointAccessors.fromApplication<AppRouterEntryPoint>(checkNotNull(contextOrNull())).settings
+    }
 
-	/** Activities **/
+    /** Activities **/
 
-	fun openList(source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?) {
-		startActivity(listIntent(contextOrNull() ?: return, source, filter, sortOrder))
-	}
+    fun openList(source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?) {
+        startActivity(listIntent(contextOrNull() ?: return, source, filter, sortOrder))
+    }
 
-	fun openList(tag: MangaTag) = openList(tag.source, MangaListFilter(tags = setOf(tag)), null)
+    fun openList(tag: MangaTag) = openList(tag.source, MangaListFilter(tags = setOf(tag)), null)
 
-	fun openSearch(query: String, kind: SearchKind = SearchKind.SIMPLE) {
-		startActivity(
-			Intent(contextOrNull() ?: return, SearchActivity::class.java)
-				.putExtra(KEY_QUERY, query)
-				.putExtra(KEY_KIND, kind),
-		)
-	}
+    fun openSearch(query: String, kind: SearchKind = SearchKind.SIMPLE) {
+        startActivity(
+            Intent(contextOrNull() ?: return, SearchActivity::class.java)
+                .putExtra(KEY_QUERY, query)
+                .putExtra(KEY_KIND, kind),
+        )
+    }
 
-	fun openSearch(source: MangaSource, query: String) = openList(source, MangaListFilter(query = query), null)
+    fun openSearch(source: MangaSource, query: String) = openList(source, MangaListFilter(query = query), null)
 
-	fun openDetails(manga: Manga) {
-		startActivity(detailsIntent(contextOrNull() ?: return, manga))
-	}
+    fun openDetails(manga: Manga) {
+        startActivity(detailsIntent(contextOrNull() ?: return, manga))
+    }
 
-	fun openDetails(mangaId: Long) {
-		startActivity(detailsIntent(contextOrNull() ?: return, mangaId))
-	}
+    fun openDetails(mangaId: Long) {
+        startActivity(detailsIntent(contextOrNull() ?: return, mangaId))
+    }
 
-	fun openDetails(link: Uri) {
-		startActivity(
-			Intent(contextOrNull() ?: return, DetailsActivity::class.java)
-				.setData(link),
-		)
-	}
+    fun openDetails(link: Uri) {
+        startActivity(
+            Intent(contextOrNull() ?: return, DetailsActivity::class.java)
+                .setData(link),
+        )
+    }
 
-	fun openReader(manga: Manga, anchor: View? = null) {
-		openReader(
-			ReaderIntent.Builder(contextOrNull() ?: return)
-				.manga(manga)
-				.build(),
-			anchor,
-		)
-	}
+    fun openReader(manga: Manga, anchor: View? = null) {
+        openReader(
+            ReaderIntent.Builder(contextOrNull() ?: return)
+                .manga(manga)
+                .build(),
+            anchor,
+        )
+    }
 
-	fun openReader(intent: ReaderIntent, anchor: View? = null) {
-		val activityIntent = intent.intent
-		if (settings.isReaderMultiTaskEnabled && activityIntent.data != null) {
-			activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-		}
-		startActivity(activityIntent, anchor?.let { view -> scaleUpActivityOptionsOf(view) })
-	}
+    fun openReader(intent: ReaderIntent, anchor: View? = null) {
+        val activityIntent = intent.intent
+        if (settings.isReaderMultiTaskEnabled && activityIntent.data != null) {
+            activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+        }
+        startActivity(activityIntent, anchor?.let { view -> scaleUpActivityOptionsOf(view) })
+    }
 
-	fun openAlternatives(manga: Manga) {
-		startActivity(
-			Intent(contextOrNull() ?: return, AlternativesActivity::class.java)
-				.putExtra(KEY_MANGA, ParcelableManga(manga)),
-		)
-	}
+    fun openAlternatives(manga: Manga) {
+        startActivity(
+            Intent(contextOrNull() ?: return, AlternativesActivity::class.java)
+                .putExtra(KEY_MANGA, ParcelableManga(manga)),
+        )
+    }
 
-	fun openRelated(manga: Manga) {
-		startActivity(
-			Intent(contextOrNull(), RelatedMangaActivity::class.java)
-				.putExtra(KEY_MANGA, ParcelableManga(manga)),
-		)
-	}
+    fun openRelated(manga: Manga) {
+        startActivity(
+            Intent(contextOrNull(), RelatedMangaActivity::class.java)
+                .putExtra(KEY_MANGA, ParcelableManga(manga)),
+        )
+    }
 
-	fun openImage(url: String, source: MangaSource?, anchor: View? = null, preview: CoilMemoryCacheKey? = null) {
-		startActivity(
-			Intent(contextOrNull(), ImageActivity::class.java)
-				.setData(url.toUri())
-				.putExtra(KEY_SOURCE, source?.name)
-				.putExtra(KEY_PREVIEW, preview),
-			anchor?.let { scaleUpActivityOptionsOf(it) },
-		)
-	}
+    fun openImage(url: String, source: MangaSource?, anchor: View? = null, preview: CoilMemoryCacheKey? = null) {
+        startActivity(
+            Intent(contextOrNull(), ImageActivity::class.java)
+                .setData(url.toUri())
+                .putExtra(KEY_SOURCE, source?.name)
+                .putExtra(KEY_PREVIEW, preview),
+            anchor?.let { scaleUpActivityOptionsOf(it) },
+        )
+    }
 
-	fun openBookmarks() = startActivity(AllBookmarksActivity::class.java)
+    fun openBookmarks() = startActivity(AllBookmarksActivity::class.java)
 
-	fun openAppUpdate() = startActivity(AppUpdateActivity::class.java)
+    fun openAppUpdate() = startActivity(AppUpdateActivity::class.java)
 
-	fun openSuggestions() {
-		startActivity(suggestionsIntent(contextOrNull() ?: return))
-	}
+    fun openSuggestions() {
+        startActivity(suggestionsIntent(contextOrNull() ?: return))
+    }
 
-	fun openSourcesCatalog() = startActivity(SourcesCatalogActivity::class.java)
+    fun openSourcesCatalog() = startActivity(SourcesCatalogActivity::class.java)
 
-	fun openDownloads() = startActivity(DownloadsActivity::class.java)
+    fun openDownloads() = startActivity(DownloadsActivity::class.java)
 
-	fun openDirectoriesSettings() = startActivity(MangaDirectoriesActivity::class.java)
+    fun openDirectoriesSettings() = startActivity(MangaDirectoriesActivity::class.java)
 
-	fun openBrowser(url: String, source: MangaSource?, title: String?) {
-		startActivity(browserIntent(contextOrNull() ?: return, url, source, title))
-	}
+    fun openBrowser(url: String, source: MangaSource?, title: String?) {
+        startActivity(browserIntent(contextOrNull() ?: return, url, source, title))
+    }
 
-	fun openColorFilterConfig(manga: Manga, page: MangaPage) {
-		startActivity(
-			Intent(contextOrNull(), ColorFilterConfigActivity::class.java)
-				.putExtra(KEY_MANGA, ParcelableManga(manga))
-				.putExtra(KEY_PAGES, ParcelableMangaPage(page)),
-		)
-	}
+    fun openBrowser(manga: Manga) = openBrowser(
+        url = manga.publicUrl,
+        source = manga.source,
+        title = manga.title,
+    )
 
-	fun openHistory() = startActivity(HistoryActivity::class.java)
+    fun openColorFilterConfig(manga: Manga, page: MangaPage) {
+        startActivity(
+            Intent(contextOrNull(), ColorFilterConfigActivity::class.java)
+                .putExtra(KEY_MANGA, ParcelableManga(manga))
+                .putExtra(KEY_PAGES, ParcelableMangaPage(page)),
+        )
+    }
 
-	fun openFavorites() = startActivity(FavouritesActivity::class.java)
+    fun openHistory() = startActivity(HistoryActivity::class.java)
 
-	fun openFavorites(category: FavouriteCategory) {
-		startActivity(
-			Intent(contextOrNull() ?: return, FavouritesActivity::class.java)
-				.putExtra(KEY_ID, category.id)
-				.putExtra(KEY_TITLE, category.title),
-		)
-	}
+    fun openFavorites() = startActivity(FavouritesActivity::class.java)
 
-	fun openFavoriteCategories() = startActivity(FavouriteCategoriesActivity::class.java)
+    fun openFavorites(category: FavouriteCategory) {
+        startActivity(
+            Intent(contextOrNull() ?: return, FavouritesActivity::class.java)
+                .putExtra(KEY_ID, category.id)
+                .putExtra(KEY_TITLE, category.title),
+        )
+    }
 
-	fun openFavoriteCategoryEdit(categoryId: Long) {
-		startActivity(
-			Intent(contextOrNull() ?: return, FavouritesCategoryEditActivity::class.java)
-				.putExtra(KEY_ID, categoryId),
-		)
-	}
+    fun openFavoriteCategories() = startActivity(FavouriteCategoriesActivity::class.java)
 
-	fun openFavoriteCategoryCreate() = openFavoriteCategoryEdit(FavouritesCategoryEditActivity.NO_ID)
+    fun openFavoriteCategoryEdit(categoryId: Long) {
+        startActivity(
+            Intent(contextOrNull() ?: return, FavouritesCategoryEditActivity::class.java)
+                .putExtra(KEY_ID, categoryId),
+        )
+    }
 
-	fun openMangaUpdates() {
-		startActivity(mangaUpdatesIntent(contextOrNull() ?: return))
-	}
+    fun openFavoriteCategoryCreate() = openFavoriteCategoryEdit(FavouritesCategoryEditActivity.NO_ID)
 
-	fun openMangaOverrideConfig(manga: Manga) {
-		val intent = overrideEditIntent(contextOrNull() ?: return, manga)
-		startActivity(intent)
-	}
+    fun openMangaUpdates() {
+        startActivity(mangaUpdatesIntent(contextOrNull() ?: return))
+    }
 
-	fun openSettings() = startActivity(SettingsActivity::class.java)
+    fun openMangaOverrideConfig(manga: Manga) {
+        val intent = overrideEditIntent(contextOrNull() ?: return, manga)
+        startActivity(intent)
+    }
 
-	fun openReaderSettings() {
-		startActivity(readerSettingsIntent(contextOrNull() ?: return))
-	}
+    fun openSettings() = startActivity(SettingsActivity::class.java)
 
-	fun openProxySettings() {
-		startActivity(proxySettingsIntent(contextOrNull() ?: return))
-	}
+    fun openReaderSettings() {
+        startActivity(readerSettingsIntent(contextOrNull() ?: return))
+    }
 
-	fun openDownloadsSetting() {
-		startActivity(downloadsSettingsIntent(contextOrNull() ?: return))
-	}
+    fun openProxySettings() {
+        startActivity(proxySettingsIntent(contextOrNull() ?: return))
+    }
 
-	fun openSourceSettings(source: MangaSource) {
-		startActivity(sourceSettingsIntent(contextOrNull() ?: return, source))
-	}
+    fun openDownloadsSetting() {
+        startActivity(downloadsSettingsIntent(contextOrNull() ?: return))
+    }
 
-	fun openSuggestionsSettings() {
-		startActivity(suggestionsSettingsIntent(contextOrNull() ?: return))
-	}
+    fun openSourceSettings(source: MangaSource) {
+        startActivity(sourceSettingsIntent(contextOrNull() ?: return, source))
+    }
 
-	fun openSourcesSettings() {
-		startActivity(sourcesSettingsIntent(contextOrNull() ?: return))
-	}
+    fun openSuggestionsSettings() {
+        startActivity(suggestionsSettingsIntent(contextOrNull() ?: return))
+    }
+
+    fun openSourcesSettings() {
+        startActivity(sourcesSettingsIntent(contextOrNull() ?: return))
+    }
 
 	fun openReaderTapGridSettings() = startActivity(ReaderTapGridConfigActivity::class.java)
 
-	fun openScrobblerSettings(scrobbler: ScrobblerService) {
-		startActivity(
-			Intent(contextOrNull() ?: return, ScrobblerConfigActivity::class.java)
-				.putExtra(KEY_ID, scrobbler.id),
-		)
-	}
+    fun openScrobblerSettings(scrobbler: ScrobblerService) {
+        startActivity(
+            Intent(contextOrNull() ?: return, ScrobblerConfigActivity::class.java)
+                .putExtra(KEY_ID, scrobbler.id),
+        )
+    }
 
-	fun openSourceAuth(source: MangaSource) {
-		startActivity(sourceAuthIntent(contextOrNull() ?: return, source))
-	}
+    fun openSourceAuth(source: MangaSource) {
+        startActivity(sourceAuthIntent(contextOrNull() ?: return, source))
+    }
 
-	fun openManageSources() {
-		startActivity(
-			manageSourcesIntent(contextOrNull() ?: return),
-		)
-	}
+    fun openManageSources() {
+        startActivity(
+            manageSourcesIntent(contextOrNull() ?: return),
+        )
+    }
 
-	fun openStatistic() = startActivity(StatsActivity::class.java)
+    fun openStatistic() = startActivity(StatsActivity::class.java)
 
-	@CheckResult
-	fun openExternalBrowser(url: String, chooserTitle: CharSequence? = null): Boolean {
-		val intent = Intent(Intent.ACTION_VIEW)
-		intent.data = url.toUriOrNull() ?: return false
-		return startActivitySafe(
-			if (!chooserTitle.isNullOrEmpty()) {
-				Intent.createChooser(intent, chooserTitle)
-			} else {
-				intent
-			},
-		)
-	}
+    @CheckResult
+    fun openExternalBrowser(url: String, chooserTitle: CharSequence? = null): Boolean {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = url.toUriOrNull() ?: return false
+        return startActivitySafe(
+            if (!chooserTitle.isNullOrEmpty()) {
+                Intent.createChooser(intent, chooserTitle)
+            } else {
+                intent
+            },
+        )
+    }
 
-	@CheckResult
-	fun openSystemSyncSettings(account: Account): Boolean {
-		val args = Bundle(1)
-		args.putParcelable(ACCOUNT_KEY, account)
-		val intent = Intent(ACTION_ACCOUNT_SYNC_SETTINGS)
-		intent.putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args)
-		return startActivitySafe(intent)
-	}
+    @CheckResult
+    fun openSystemSyncSettings(account: Account): Boolean {
+        val args = Bundle(1)
+        args.putParcelable(ACCOUNT_KEY, account)
+        val intent = Intent(ACTION_ACCOUNT_SYNC_SETTINGS)
+        intent.putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, args)
+        return startActivitySafe(intent)
+    }
 
-	/** Dialogs **/
+    /** Dialogs **/
 
-	fun showDownloadDialog(manga: Manga, snackbarHost: View?) = showDownloadDialog(setOf(manga), snackbarHost)
+    fun showDownloadDialog(manga: Manga, snackbarHost: View?) = showDownloadDialog(setOf(manga), snackbarHost)
 
-	fun showDownloadDialog(manga: Collection<Manga>, snackbarHost: View?) {
-		if (manga.isEmpty()) {
-			return
-		}
-		val fm = getFragmentManager() ?: return
-		if (snackbarHost != null) {
-			getLifecycleOwner()?.let { lifecycleOwner ->
-				DownloadDialogFragment.registerCallback(fm, lifecycleOwner, snackbarHost)
-			}
-		} else {
-			DownloadDialogFragment.unregisterCallback(fm)
-		}
-		DownloadDialogFragment().withArgs(1) {
-			putParcelableArray(KEY_MANGA, manga.mapToArray { ParcelableManga(it, withDescription = false) })
-		}.showDistinct()
-	}
+    fun showDownloadDialog(manga: Collection<Manga>, snackbarHost: View?) {
+        if (manga.isEmpty()) {
+            return
+        }
+        val fm = getFragmentManager() ?: return
+        if (snackbarHost != null) {
+            getLifecycleOwner()?.let { lifecycleOwner ->
+                DownloadDialogFragment.registerCallback(fm, lifecycleOwner, snackbarHost)
+            }
+        } else {
+            DownloadDialogFragment.unregisterCallback(fm)
+        }
+        DownloadDialogFragment().withArgs(1) {
+            putParcelableArray(KEY_MANGA, manga.mapToArray { ParcelableManga(it, withDescription = false) })
+        }.showDistinct()
+    }
 
-	fun showLocalInfoDialog(manga: Manga) {
-		LocalInfoDialog().withArgs(1) {
-			putParcelable(KEY_MANGA, ParcelableManga(manga))
-		}.showDistinct()
-	}
+    fun showLocalInfoDialog(manga: Manga) {
+        LocalInfoDialog().withArgs(1) {
+            putParcelable(KEY_MANGA, ParcelableManga(manga))
+        }.showDistinct()
+    }
 
-	fun showDirectorySelectDialog() {
-		MangaDirectorySelectDialog().showDistinct()
-	}
+    fun showDirectorySelectDialog() {
+        MangaDirectorySelectDialog().showDistinct()
+    }
 
-	fun showFavoriteDialog(manga: Manga) = showFavoriteDialog(setOf(manga))
+    fun showFavoriteDialog(manga: Manga) = showFavoriteDialog(setOf(manga))
 
-	fun showFavoriteDialog(manga: Collection<Manga>) {
-		if (manga.isEmpty()) {
-			return
-		}
-		FavoriteDialog().withArgs(1) {
-			putParcelableArrayList(
-				KEY_MANGA_LIST,
-				manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withDescription = false) },
-			)
-		}.showDistinct()
-	}
+    fun showFavoriteDialog(manga: Collection<Manga>) {
+        if (manga.isEmpty()) {
+            return
+        }
+        FavoriteDialog().withArgs(1) {
+            putParcelableArrayList(
+                KEY_MANGA_LIST,
+                manga.mapTo(ArrayList(manga.size)) { ParcelableManga(it, withDescription = false) },
+            )
+        }.showDistinct()
+    }
 
-	fun showTagDialog(tag: MangaTag) {
-		buildAlertDialog(contextOrNull() ?: return) {
-			setIcon(R.drawable.ic_tag)
-			setTitle(tag.title)
-			setItems(
-				arrayOf(
-					context.getString(R.string.search_on_s, tag.source.getTitle(context)),
-					context.getString(R.string.search_everywhere),
-				),
-			) { _, which ->
-				when (which) {
-					0 -> openList(tag)
-					1 -> openSearch(tag.title, SearchKind.TAG)
-				}
-			}
-			setNegativeButton(R.string.close, null)
-			setCancelable(true)
-		}.show()
-	}
+    fun showTagDialog(tag: MangaTag) {
+        buildAlertDialog(contextOrNull() ?: return) {
+            setIcon(R.drawable.ic_tag)
+            setTitle(tag.title)
+            setItems(
+                arrayOf(
+                    context.getString(R.string.search_on_s, tag.source.getTitle(context)),
+                    context.getString(R.string.search_everywhere),
+                ),
+            ) { _, which ->
+                when (which) {
+                    0 -> openList(tag)
+                    1 -> openSearch(tag.title, SearchKind.TAG)
+                }
+            }
+            setNegativeButton(R.string.close, null)
+            setCancelable(true)
+        }.show()
+    }
 
-	fun showAuthorDialog(author: String, source: MangaSource) {
-		buildAlertDialog(contextOrNull() ?: return) {
-			setIcon(R.drawable.ic_user)
-			setTitle(author)
-			setItems(
-				arrayOf(
-					context.getString(R.string.search_on_s, source.getTitle(context)),
-					context.getString(R.string.search_everywhere),
-				),
-			) { _, which ->
-				when (which) {
-					0 -> openList(source, MangaListFilter(author = author), null)
-					1 -> openSearch(author, SearchKind.AUTHOR)
-				}
-			}
-			setNegativeButton(R.string.close, null)
-			setCancelable(true)
-		}.show()
-	}
+    fun showAuthorDialog(author: String, source: MangaSource) {
+        buildAlertDialog(contextOrNull() ?: return) {
+            setIcon(R.drawable.ic_user)
+            setTitle(author)
+            setItems(
+                arrayOf(
+                    context.getString(R.string.search_on_s, source.getTitle(context)),
+                    context.getString(R.string.search_everywhere),
+                ),
+            ) { _, which ->
+                when (which) {
+                    0 -> openList(source, MangaListFilter(author = author), null)
+                    1 -> openSearch(author, SearchKind.AUTHOR)
+                }
+            }
+            setNegativeButton(R.string.close, null)
+            setCancelable(true)
+        }.show()
+    }
 
-	fun showShareDialog(manga: Manga) {
-		if (manga.isBroken) {
-			return
-		}
-		if (manga.isLocal) {
-			manga.url.toUri().toFileOrNull()?.let {
-				shareFile(it)
-			}
-			return
-		}
-		buildAlertDialog(contextOrNull() ?: return) {
-			setIcon(context.getThemeDrawable(appcompatR.attr.actionModeShareDrawable))
-			setTitle(R.string.share)
-			setItems(
-				arrayOf(
-					context.getString(R.string.link_to_manga_in_app),
-					context.getString(R.string.link_to_manga_on_s, manga.source.getTitle(context)),
-				),
-			) { _, which ->
-				val link = when (which) {
-					0 -> manga.appUrl.toString()
-					1 -> manga.publicUrl
-					else -> return@setItems
-				}
-				shareLink(link, manga.title)
-			}
-			setNegativeButton(android.R.string.cancel, null)
-			setCancelable(true)
-		}.show()
-	}
+    fun showShareDialog(manga: Manga) {
+        if (manga.isBroken) {
+            return
+        }
+        if (manga.isLocal) {
+            manga.url.toUri().toFileOrNull()?.let {
+                shareFile(it)
+            }
+            return
+        }
+        buildAlertDialog(contextOrNull() ?: return) {
+            setIcon(context.getThemeDrawable(appcompatR.attr.actionModeShareDrawable))
+            setTitle(R.string.share)
+            setItems(
+                arrayOf(
+                    context.getString(R.string.link_to_manga_in_app),
+                    context.getString(R.string.link_to_manga_on_s, manga.source.getTitle(context)),
+                ),
+            ) { _, which ->
+                val link = when (which) {
+                    0 -> manga.appUrl.toString()
+                    1 -> manga.publicUrl
+                    else -> return@setItems
+                }
+                shareLink(link, manga.title)
+            }
+            setNegativeButton(android.R.string.cancel, null)
+            setCancelable(true)
+        }.show()
+    }
 
-	fun showErrorDialog(error: Throwable, url: String? = null) {
-		ErrorDetailsDialog().withArgs(2) {
-			putSerializable(KEY_ERROR, error)
-			putString(KEY_URL, url)
-		}.show()
-	}
+    fun showErrorDialog(error: Throwable, url: String? = null) {
+        ErrorDetailsDialog().withArgs(2) {
+            putSerializable(KEY_ERROR, error)
+            putString(KEY_URL, url)
+        }.show()
+    }
 
-	fun showBackupRestoreDialog(fileUri: Uri) {
-		RestoreDialogFragment().withArgs(1) {
-			putString(KEY_FILE, fileUri.toString())
-		}.show()
-	}
+    fun showBackupRestoreDialog(fileUri: Uri) {
+        RestoreDialogFragment().withArgs(1) {
+            putString(KEY_FILE, fileUri.toString())
+        }.show()
+    }
 
-	fun createBackup(destination: Uri) {
-		BackupDialogFragment().withArgs(1) {
-			putParcelable(KEY_DATA, destination)
-		}.showDistinct()
-	}
+    fun createBackup(destination: Uri) {
+        BackupDialogFragment().withArgs(1) {
+            putParcelable(KEY_DATA, destination)
+        }.showDistinct()
+    }
 
-	fun showImportDialog() {
-		ImportDialogFragment().showDistinct()
-	}
+    fun showImportDialog() {
+        ImportDialogFragment().showDistinct()
+    }
 
-	fun showFilterSheet(): Boolean = if (isFilterSupported()) {
-		FilterSheetFragment().showDistinct()
-	} else {
-		false
-	}
+    fun showFilterSheet(): Boolean = if (isFilterSupported()) {
+        FilterSheetFragment().showDistinct()
+    } else {
+        false
+    }
 
-	fun showTagsCatalogSheet(excludeMode: Boolean) {
-		if (!isFilterSupported()) {
-			return
-		}
-		TagsCatalogSheet().withArgs(1) {
-			putBoolean(KEY_EXCLUDE, excludeMode)
-		}.showDistinct()
-	}
+    fun showTagsCatalogSheet(excludeMode: Boolean) {
+        if (!isFilterSupported()) {
+            return
+        }
+        TagsCatalogSheet().withArgs(1) {
+            putBoolean(KEY_EXCLUDE, excludeMode)
+        }.showDistinct()
+    }
 
-	fun showListConfigSheet(section: ListConfigSection) {
-		ListConfigBottomSheet().withArgs(1) {
-			putParcelable(KEY_LIST_SECTION, section)
-		}.showDistinct()
-	}
+    fun showListConfigSheet(section: ListConfigSection) {
+        ListConfigBottomSheet().withArgs(1) {
+            putParcelable(KEY_LIST_SECTION, section)
+        }.showDistinct()
+    }
 
-	fun showStatisticSheet(manga: Manga) {
-		MangaStatsSheet().withArgs(1) {
-			putParcelable(KEY_MANGA, ParcelableManga(manga))
-		}.showDistinct()
-	}
+    fun showStatisticSheet(manga: Manga) {
+        MangaStatsSheet().withArgs(1) {
+            putParcelable(KEY_MANGA, ParcelableManga(manga))
+        }.showDistinct()
+    }
 
-	fun showReaderConfigSheet(mode: ReaderMode) {
-		ReaderConfigSheet().withArgs(1) {
-			putInt(KEY_READER_MODE, mode.id)
-		}.showDistinct()
-	}
+    fun showReaderConfigSheet(mode: ReaderMode) {
+        ReaderConfigSheet().withArgs(1) {
+            putInt(KEY_READER_MODE, mode.id)
+        }.showDistinct()
+    }
 
-	fun showWelcomeSheet() {
-		WelcomeSheet().showDistinct()
-	}
+    fun showWelcomeSheet() {
+        WelcomeSheet().showDistinct()
+    }
 
-	fun showChapterPagesSheet() {
-		ChaptersPagesSheet().showDistinct()
-	}
+    fun showChapterPagesSheet() {
+        ChaptersPagesSheet().showDistinct()
+    }
 
-	fun showChapterPagesSheet(defaultTab: Int) {
-		ChaptersPagesSheet().withArgs(1) {
-			putInt(KEY_TAB, defaultTab)
-		}.showDistinct()
-	}
+    fun showChapterPagesSheet(defaultTab: Int) {
+        ChaptersPagesSheet().withArgs(1) {
+            putInt(KEY_TAB, defaultTab)
+        }.showDistinct()
+    }
 
-	fun showScrobblingSelectorSheet(manga: Manga, scrobblerService: ScrobblerService?) {
-		ScrobblingSelectorSheet().withArgs(2) {
-			putParcelable(KEY_MANGA, ParcelableManga(manga))
-			if (scrobblerService != null) {
-				putInt(KEY_ID, scrobblerService.id)
-			}
-		}.show()
-	}
+    fun showScrobblingSelectorSheet(manga: Manga, scrobblerService: ScrobblerService?) {
+        ScrobblingSelectorSheet().withArgs(2) {
+            putParcelable(KEY_MANGA, ParcelableManga(manga))
+            if (scrobblerService != null) {
+                putInt(KEY_ID, scrobblerService.id)
+            }
+        }.show()
+    }
 
-	fun showScrobblingInfoSheet(index: Int) {
-		ScrobblingInfoSheet().withArgs(1) {
-			putInt(KEY_INDEX, index)
-		}.showDistinct()
-	}
+    fun showScrobblingInfoSheet(index: Int) {
+        ScrobblingInfoSheet().withArgs(1) {
+            putInt(KEY_INDEX, index)
+        }.showDistinct()
+    }
 
-	fun showTrackerCategoriesConfigSheet() {
-		TrackerCategoriesConfigSheet().showDistinct()
-	}
+    fun showTrackerCategoriesConfigSheet() {
+        TrackerCategoriesConfigSheet().showDistinct()
+    }
 
-	fun askForDownloadOverMeteredNetwork(onConfirmed: (allow: Boolean) -> Unit) {
-		val context = contextOrNull() ?: return
-		when (settings.allowDownloadOnMeteredNetwork) {
-			TriStateOption.ENABLED -> onConfirmed(true)
-			TriStateOption.DISABLED -> onConfirmed(false)
-			TriStateOption.ASK -> {
-				if (!context.connectivityManager.isActiveNetworkMetered) {
-					onConfirmed(true)
-					return
-				}
-				val listener = DialogInterface.OnClickListener { _, which ->
-					when (which) {
-						DialogInterface.BUTTON_POSITIVE -> {
-							settings.allowDownloadOnMeteredNetwork = TriStateOption.ENABLED
-							onConfirmed(true)
-						}
+    fun askForDownloadOverMeteredNetwork(onConfirmed: (allow: Boolean) -> Unit) {
+        val context = contextOrNull() ?: return
+        when (settings.allowDownloadOnMeteredNetwork) {
+            TriStateOption.ENABLED -> onConfirmed(true)
+            TriStateOption.DISABLED -> onConfirmed(false)
+            TriStateOption.ASK -> {
+                if (!context.connectivityManager.isActiveNetworkMetered) {
+                    onConfirmed(true)
+                    return
+                }
+                val listener = DialogInterface.OnClickListener { _, which ->
+                    when (which) {
+                        DialogInterface.BUTTON_POSITIVE -> {
+                            settings.allowDownloadOnMeteredNetwork = TriStateOption.ENABLED
+                            onConfirmed(true)
+                        }
 
-						DialogInterface.BUTTON_NEUTRAL -> {
-							onConfirmed(true)
-						}
+                        DialogInterface.BUTTON_NEUTRAL -> {
+                            onConfirmed(true)
+                        }
 
-						DialogInterface.BUTTON_NEGATIVE -> {
-							settings.allowDownloadOnMeteredNetwork = TriStateOption.DISABLED
-							onConfirmed(false)
-						}
-					}
-				}
-				BigButtonsAlertDialog.Builder(context)
-					.setIcon(R.drawable.ic_network_cellular)
-					.setTitle(R.string.download_cellular_confirm)
-					.setPositiveButton(R.string.allow_always, listener)
-					.setNeutralButton(R.string.allow_once, listener)
-					.setNegativeButton(R.string.dont_allow, listener)
-					.create()
-					.show()
-			}
-		}
-	}
+                        DialogInterface.BUTTON_NEGATIVE -> {
+                            settings.allowDownloadOnMeteredNetwork = TriStateOption.DISABLED
+                            onConfirmed(false)
+                        }
+                    }
+                }
+                BigButtonsAlertDialog.Builder(context)
+                    .setIcon(R.drawable.ic_network_cellular)
+                    .setTitle(R.string.download_cellular_confirm)
+                    .setPositiveButton(R.string.allow_always, listener)
+                    .setNeutralButton(R.string.allow_once, listener)
+                    .setNegativeButton(R.string.dont_allow, listener)
+                    .create()
+                    .show()
+            }
+        }
+    }
 
-	/** Public utils **/
+    /** Public utils **/
 
-	fun isFilterSupported(): Boolean = when {
-		fragment != null -> FilterCoordinator.find(fragment) != null
-		activity != null -> activity is FilterCoordinator.Owner
-		else -> false
-	}
+    fun isFilterSupported(): Boolean = when {
+        fragment != null -> FilterCoordinator.find(fragment) != null
+        activity != null -> activity is FilterCoordinator.Owner
+        else -> false
+    }
 
-	fun isChapterPagesSheetShown(): Boolean {
-		val sheet = getFragmentManager()?.findFragmentByTag(fragmentTag<ChaptersPagesSheet>()) as? ChaptersPagesSheet
-		return sheet?.dialog?.isShowing == true
-	}
+    fun isChapterPagesSheetShown(): Boolean {
+        val sheet = getFragmentManager()?.findFragmentByTag(fragmentTag<ChaptersPagesSheet>()) as? ChaptersPagesSheet
+        return sheet?.dialog?.isShowing == true
+    }
 
-	fun closeWelcomeSheet(): Boolean {
-		val tag = fragmentTag<WelcomeSheet>()
-		val sheet = fragment?.findFragmentByTagRecursive(tag)
-			?: activity?.supportFragmentManager?.findFragmentByTag(tag)
-			?: return false
-		return if (sheet is WelcomeSheet) {
-			sheet.dismissAllowingStateLoss()
-			true
-		} else {
-			false
-		}
-	}
+    fun closeWelcomeSheet(): Boolean {
+        val tag = fragmentTag<WelcomeSheet>()
+        val sheet = fragment?.findFragmentByTagRecursive(tag)
+            ?: activity?.supportFragmentManager?.findFragmentByTag(tag)
+            ?: return false
+        return if (sheet is WelcomeSheet) {
+            sheet.dismissAllowingStateLoss()
+            true
+        } else {
+            false
+        }
+    }
 
-	/** Private utils **/
+    /** Private utils **/
 
-	private fun startActivity(intent: Intent, options: Bundle? = null) {
-		fragment?.also {
-			if (it.host != null) {
-				it.startActivity(intent, options)
-			}
-		} ?: activity?.startActivity(intent, options)
-	}
+    private fun startActivity(intent: Intent, options: Bundle? = null) {
+        fragment?.also {
+            if (it.host != null) {
+                it.startActivity(intent, options)
+            }
+        } ?: activity?.startActivity(intent, options)
+    }
 
-	private fun startActivitySafe(intent: Intent): Boolean = try {
-		startActivity(intent)
-		true
-	} catch (_: ActivityNotFoundException) {
-		false
-	}
+    private fun startActivitySafe(intent: Intent): Boolean = try {
+        startActivity(intent)
+        true
+    } catch (_: ActivityNotFoundException) {
+        false
+    }
 
-	private fun startActivity(activityClass: Class<out Activity>) {
-		startActivity(Intent(contextOrNull() ?: return, activityClass))
-	}
+    private fun startActivity(activityClass: Class<out Activity>) {
+        startActivity(Intent(contextOrNull() ?: return, activityClass))
+    }
 
-	private fun getFragmentManager(): FragmentManager? = runCatching {
-		fragment?.childFragmentManager ?: activity?.supportFragmentManager
-	}.onFailure { exception ->
-		exception.printStackTraceDebug()
-	}.getOrNull()
+    private fun getFragmentManager(): FragmentManager? = runCatching {
+        fragment?.childFragmentManager ?: activity?.supportFragmentManager
+    }.onFailure { exception ->
+        exception.printStackTraceDebug()
+    }.getOrNull()
 
 	private fun shareLink(link: String, title: String) {
 		val context = contextOrNull() ?: return
@@ -630,165 +636,165 @@ class AppRouter private constructor(
 			.startChooser()
 	}
 
-	private fun shareFile(file: File) { // TODO directory sharing support
-		val context = contextOrNull() ?: return
-		val intentBuilder = ShareCompat.IntentBuilder(context)
-			.setType(TYPE_CBZ)
-		val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
-		intentBuilder.addStream(uri)
-		intentBuilder.setChooserTitle(context.getString(R.string.share_s, file.name))
-		intentBuilder.startChooser()
-	}
+    private fun shareFile(file: File) { // TODO directory sharing support
+        val context = contextOrNull() ?: return
+        val intentBuilder = ShareCompat.IntentBuilder(context)
+            .setType(TYPE_CBZ)
+        val uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.files", file)
+        intentBuilder.addStream(uri)
+        intentBuilder.setChooserTitle(context.getString(R.string.share_s, file.name))
+        intentBuilder.startChooser()
+    }
 
-	@UiContext
-	private fun contextOrNull(): Context? = activity ?: fragment?.context
+    @UiContext
+    private fun contextOrNull(): Context? = activity ?: fragment?.context
 
-	private fun getLifecycleOwner(): LifecycleOwner? = activity ?: fragment?.viewLifecycleOwner
+    private fun getLifecycleOwner(): LifecycleOwner? = activity ?: fragment?.viewLifecycleOwner
 
-	private fun DialogFragment.showDistinct(): Boolean {
-		val fm = this@AppRouter.getFragmentManager() ?: return false
-		val tag = javaClass.fragmentTag()
-		val existing = fm.findFragmentByTag(tag) as? DialogFragment?
-		if (existing != null && existing.isVisible && existing.arguments == this.arguments) {
-			return false
-		}
-		show(fm, tag)
-		return true
-	}
+    private fun DialogFragment.showDistinct(): Boolean {
+        val fm = this@AppRouter.getFragmentManager() ?: return false
+        val tag = javaClass.fragmentTag()
+        val existing = fm.findFragmentByTag(tag) as? DialogFragment?
+        if (existing != null && existing.isVisible && existing.arguments == this.arguments) {
+            return false
+        }
+        show(fm, tag)
+        return true
+    }
 
-	private fun DialogFragment.show() {
-		show(
-			this@AppRouter.getFragmentManager() ?: return,
-			javaClass.fragmentTag(),
-		)
-	}
+    private fun DialogFragment.show() {
+        show(
+            this@AppRouter.getFragmentManager() ?: return,
+            javaClass.fragmentTag(),
+        )
+    }
 
-	private fun Fragment.findFragmentByTagRecursive(fragmentTag: String): Fragment? {
-		childFragmentManager.findFragmentByTag(fragmentTag)?.let {
-			return it
-		}
-		val parent = parentFragment
-		return if (parent != null) {
-			parent.findFragmentByTagRecursive(fragmentTag)
-		} else {
-			parentFragmentManager.findFragmentByTag(fragmentTag)
-		}
-	}
+    private fun Fragment.findFragmentByTagRecursive(fragmentTag: String): Fragment? {
+        childFragmentManager.findFragmentByTag(fragmentTag)?.let {
+            return it
+        }
+        val parent = parentFragment
+        return if (parent != null) {
+            parent.findFragmentByTagRecursive(fragmentTag)
+        } else {
+            parentFragmentManager.findFragmentByTag(fragmentTag)
+        }
+    }
 
-	companion object {
+    companion object {
 
-		fun from(view: View): AppRouter? = runCatching {
-			AppRouter(view.findFragment())
-		}.getOrElse {
-			(view.context.findActivity() as? FragmentActivity)?.let(::AppRouter)
-		}
+        fun from(view: View): AppRouter? = runCatching {
+            AppRouter(view.findFragment())
+        }.getOrElse {
+            (view.context.findActivity() as? FragmentActivity)?.let(::AppRouter)
+        }
 
-		fun detailsIntent(context: Context, manga: Manga) = Intent(context, DetailsActivity::class.java)
-			.putExtra(KEY_MANGA, ParcelableManga(manga))
-			.setData(shortMangaUrl(manga.id))
+        fun detailsIntent(context: Context, manga: Manga) = Intent(context, DetailsActivity::class.java)
+            .putExtra(KEY_MANGA, ParcelableManga(manga))
+            .setData(shortMangaUrl(manga.id))
 
-		fun detailsIntent(context: Context, mangaId: Long) = Intent(context, DetailsActivity::class.java)
-			.putExtra(KEY_ID, mangaId)
-			.setData(shortMangaUrl(mangaId))
+        fun detailsIntent(context: Context, mangaId: Long) = Intent(context, DetailsActivity::class.java)
+            .putExtra(KEY_ID, mangaId)
+            .setData(shortMangaUrl(mangaId))
 
-		fun listIntent(context: Context, source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?): Intent =
-			Intent(context, MangaListActivity::class.java)
-				.setAction(ACTION_MANGA_EXPLORE)
-				.putExtra(KEY_SOURCE, source.name)
-				.apply {
-					if (!filter.isNullOrEmpty()) {
-						putExtra(KEY_FILTER, ParcelableMangaListFilter(filter))
-					}
-					if (sortOrder != null) {
-						putExtra(KEY_SORT_ORDER, sortOrder)
-					}
-				}
+        fun listIntent(context: Context, source: MangaSource, filter: MangaListFilter?, sortOrder: SortOrder?): Intent =
+            Intent(context, MangaListActivity::class.java)
+                .setAction(ACTION_MANGA_EXPLORE)
+                .putExtra(KEY_SOURCE, source.name)
+                .apply {
+                    if (!filter.isNullOrEmpty()) {
+                        putExtra(KEY_FILTER, ParcelableMangaListFilter(filter))
+                    }
+                    if (sortOrder != null) {
+                        putExtra(KEY_SORT_ORDER, sortOrder)
+                    }
+                }
 
-		fun cloudFlareResolveIntent(context: Context, exception: CloudFlareProtectedException): Intent =
-			Intent(context, CloudFlareActivity::class.java).apply {
-				data = exception.url.toUri()
-				putExtra(KEY_SOURCE, exception.source.name)
-				exception.headers[CommonHeaders.USER_AGENT]?.let {
-					putExtra(KEY_USER_AGENT, it)
-				}
-			}
+        fun cloudFlareResolveIntent(context: Context, exception: CloudFlareProtectedException): Intent =
+            Intent(context, CloudFlareActivity::class.java).apply {
+                data = exception.url.toUri()
+                putExtra(KEY_SOURCE, exception.source.name)
+                exception.headers[CommonHeaders.USER_AGENT]?.let {
+                    putExtra(KEY_USER_AGENT, it)
+                }
+            }
 
-		fun browserIntent(
-			context: Context,
-			url: String,
-			source: MangaSource?,
-			title: String?
-		): Intent = Intent(context, BrowserActivity::class.java)
-			.setData(url.toUri())
-			.putExtra(KEY_TITLE, title)
-			.putExtra(KEY_SOURCE, source?.name)
+        fun browserIntent(
+            context: Context,
+            url: String,
+            source: MangaSource?,
+            title: String?
+        ): Intent = Intent(context, BrowserActivity::class.java)
+            .setData(url.toUri())
+            .putExtra(KEY_TITLE, title)
+            .putExtra(KEY_SOURCE, source?.name)
 
-		fun suggestionsIntent(context: Context) = Intent(context, SuggestionsActivity::class.java)
+        fun suggestionsIntent(context: Context) = Intent(context, SuggestionsActivity::class.java)
 
-		fun homeIntent(context: Context) = Intent(context, MainActivity::class.java)
+        fun homeIntent(context: Context) = Intent(context, MainActivity::class.java)
 
-		fun mangaUpdatesIntent(context: Context) = Intent(context, UpdatesActivity::class.java)
+        fun mangaUpdatesIntent(context: Context) = Intent(context, UpdatesActivity::class.java)
 
-		fun readerSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_READER)
+        fun readerSettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_READER)
 
-		fun suggestionsSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_SUGGESTIONS)
+        fun suggestionsSettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_SUGGESTIONS)
 
-		fun trackerSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_TRACKER)
+        fun trackerSettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_TRACKER)
 
-		fun periodicBackupSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_PERIODIC_BACKUP)
+        fun periodicBackupSettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_PERIODIC_BACKUP)
 
 		fun proxySettingsIntent(context: Context) =
 			Intent(context, SettingsActivity::class.java)
 				.setAction(ACTION_PROXY)
 
-		fun historySettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_HISTORY)
+        fun historySettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_HISTORY)
 
-		fun sourcesSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_SOURCES)
+        fun sourcesSettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_SOURCES)
 
-		fun manageSourcesIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_MANAGE_SOURCES)
+        fun manageSourcesIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_MANAGE_SOURCES)
 
-		fun downloadsSettingsIntent(context: Context) =
-			Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_MANAGE_DOWNLOADS)
+        fun downloadsSettingsIntent(context: Context) =
+            Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_MANAGE_DOWNLOADS)
 
-		fun sourceSettingsIntent(context: Context, source: MangaSource): Intent = when (source) {
-			is MangaSourceInfo -> sourceSettingsIntent(context, source.mangaSource)
-			is ExternalMangaSource -> Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-				.setData(Uri.fromParts("package", source.packageName, null))
+        fun sourceSettingsIntent(context: Context, source: MangaSource): Intent = when (source) {
+            is MangaSourceInfo -> sourceSettingsIntent(context, source.mangaSource)
+            is ExternalMangaSource -> Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                .setData(Uri.fromParts("package", source.packageName, null))
 
-			else -> Intent(context, SettingsActivity::class.java)
-				.setAction(ACTION_SOURCE)
-				.putExtra(KEY_SOURCE, source.name)
-		}
+            else -> Intent(context, SettingsActivity::class.java)
+                .setAction(ACTION_SOURCE)
+                .putExtra(KEY_SOURCE, source.name)
+        }
 
-		fun sourceAuthIntent(context: Context, source: MangaSource): Intent {
-			return Intent(context, SourceAuthActivity::class.java)
-				.putExtra(KEY_SOURCE, source.name)
-		}
+        fun sourceAuthIntent(context: Context, source: MangaSource): Intent {
+            return Intent(context, SourceAuthActivity::class.java)
+                .putExtra(KEY_SOURCE, source.name)
+        }
 
-		fun overrideEditIntent(context: Context, manga: Manga): Intent =
-			Intent(context, OverrideConfigActivity::class.java)
-				.putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
+        fun overrideEditIntent(context: Context, manga: Manga): Intent =
+            Intent(context, OverrideConfigActivity::class.java)
+                .putExtra(KEY_MANGA, ParcelableManga(manga, withDescription = false))
 
-		fun isShareSupported(manga: Manga): Boolean = when {
-			manga.isBroken -> false
-			manga.isLocal -> manga.url.toUri().toFileOrNull() != null
-			else -> true
-		}
+        fun isShareSupported(manga: Manga): Boolean = when {
+            manga.isBroken -> false
+            manga.isLocal -> manga.url.toUri().toFileOrNull() != null
+            else -> true
+        }
 
 		fun shortMangaUrl(mangaId: Long): Uri = Uri.Builder()
 			.scheme("kotatsu")
@@ -832,16 +838,16 @@ class AppRouter private constructor(
 		const val ACTION_TRACKER = "${BuildConfig.APPLICATION_ID}.action.MANAGE_TRACKER"
 		const val ACTION_PERIODIC_BACKUP = "${BuildConfig.APPLICATION_ID}.action.MANAGE_PERIODIC_BACKUP"
 
-		private const val ACCOUNT_KEY = "account"
-		private const val ACTION_ACCOUNT_SYNC_SETTINGS = "android.settings.ACCOUNT_SYNC_SETTINGS"
-		private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
+        private const val ACCOUNT_KEY = "account"
+        private const val ACTION_ACCOUNT_SYNC_SETTINGS = "android.settings.ACCOUNT_SYNC_SETTINGS"
+        private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
 
-		private const val TYPE_TEXT = "text/plain"
-		private const val TYPE_IMAGE = "image/*"
-		private const val TYPE_CBZ = "application/x-cbz"
+        private const val TYPE_TEXT = "text/plain"
+        private const val TYPE_IMAGE = "image/*"
+        private const val TYPE_CBZ = "application/x-cbz"
 
-		private fun Class<out Fragment>.fragmentTag() = name // TODO
+        private fun Class<out Fragment>.fragmentTag() = name // TODO
 
-		private inline fun <reified F : Fragment> fragmentTag() = F::class.java.fragmentTag()
-	}
+        private inline fun <reified F : Fragment> fragmentTag() = F::class.java.fragmentTag()
+    }
 }
