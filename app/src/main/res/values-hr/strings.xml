@@ -868,4 +868,15 @@
     <string name="save_filter">Spremi filtar</string>
     <string name="reader_chapter_toast">Prikaži skočnu poruku za promijenjeno poglavlje</string>
     <string name="two_page_scroll_sensitivity">Osjetljivost pomicanja dviju stranica</string>
+    <string name="frequency_every_6_hours">Svakih 6 sati</string>
+    <string name="overwrite">Prepiši</string>
+    <string name="filter_overwrite_confirm">Filtar s imenom „%s” već postoji. Želiš li ga prepisati?</string>
+    <string name="storage_and_network">Spremište i mreža</string>
+    <string name="create_or_restore_backup">Stvori ili obnovi sigurnosnu kopiju</string>
+    <string name="data_removal">Uklanjanje podataka</string>
+    <string name="privacy">Privatnost</string>
+    <string name="source_broken_warning">Ovaj izvor mange označen je kao pokvaren. Neke funkcije možda neće raditi</string>
+    <string name="download_default_directory">Standardni direktorij za preuzimanje manga</string>
+    <string name="private_app_directory_warning">Ako deinstaliraš aplikaciju, ovaj će se direktorij izbrisati sa svim podacima</string>
+    <string name="available_pattern">%1$s dostupno</string>
 </resources>

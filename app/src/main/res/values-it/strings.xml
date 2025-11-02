@@ -880,4 +880,8 @@
     <string name="data_removal">Rimozione dei dati</string>
     <string name="privacy">Privacy</string>
     <string name="source_broken_warning">Questa fonte manga è stata contrassegnata come non funzionante. Alcune funzioni potrebbero non essere disponibili</string>
+    <string name="frequency_every_6_hours">Ogni 6 ore</string>
+    <string name="download_default_directory">Cartella predefinita per scaricare manga</string>
+    <string name="private_app_directory_warning">Questa cartella e tutti i suoi dati verranno eliminati se disinstalli l\'applicazione</string>
+    <string name="available_pattern">%1$s disponibile</string>
 </resources>
