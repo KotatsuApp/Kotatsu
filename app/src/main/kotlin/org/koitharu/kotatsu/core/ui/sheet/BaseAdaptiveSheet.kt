@@ -32,8 +32,7 @@ import org.koitharu.kotatsu.core.ui.util.ActionModeDelegate
 import com.google.android.material.R as materialR
 
 abstract class BaseAdaptiveSheet<B : ViewBinding> : AppCompatDialogFragment(),
-	OnApplyWindowInsetsListener,
-	ExceptionResolver.Host {
+	OnApplyWindowInsetsListener {
 
 	private var waitingForDismissAllowingStateLoss = false
 	private var isFitToContentsDisabled = false
