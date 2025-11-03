@@ -133,9 +133,7 @@ class FilterSheetFragment : BaseAdaptiveSheet<SheetFilterBinding>(),
         layoutBody.updatePadding(top = layoutBody.paddingBottom)
         scrollView.scrollIndicators = 0
         buttonDone.isVisible = false
-        this.root.updateLayoutParams {
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
+        this.root.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         buttonSave.updateLayoutParams<LinearLayout.LayoutParams> {
             weight = 0f
             width = LinearLayout.LayoutParams.WRAP_CONTENT
