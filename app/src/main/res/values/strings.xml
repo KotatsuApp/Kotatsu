@@ -844,8 +844,6 @@
     <string name="hide_from_main_screen">Hide from main screen</string>
     <string name="collapse">Collapse</string>
     <string name="expand">Expand</string>
-    <string name="adblock">Block ads in browser</string>
-    <string name="adblock_summary">Block advertisement in the built-in browser (beta)</string>
     <string name="collapse_long_description">Collapse long description</string>
     <string name="creating_backup">Creating backup</string>
     <string name="share_backup">Share backup</string>

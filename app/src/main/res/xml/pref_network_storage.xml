@@ -64,10 +64,4 @@
         android:summary="@string/disable_connectivity_check_summary"
         android:title="@string/disable_connectivity_check" />
 
-    <SwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="adblock"
-        android:summary="@string/adblock_summary"
-        android:title="@string/adblock" />
-
 </PreferenceScreen>

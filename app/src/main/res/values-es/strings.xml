@@ -810,4 +810,7 @@
     <string name="pull_top_no_prev">No existe capítulo anterior</string>
     <string name="pull_bottom_no_next">No existe capítulo siguiente</string>
     <string name="enable_pull_gesture_title">Habilitar gesto de arrastrar</string>
+    <string name="storage_and_network">Red y almacenamiento</string>
+    <string name="reader_chapter_toast">Ventana emergente de cambio de capítulo</string>
+    <string name="reader_chapter_toast_summary">Mostrar un mensaje emergente con el título del capítulo cuando cambie</string>
 </resources>
