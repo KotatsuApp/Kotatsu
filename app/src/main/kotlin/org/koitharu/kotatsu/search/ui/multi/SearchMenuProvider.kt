@@ -9,11 +9,9 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.search.domain.SearchKind
 
-class SearchKindMenuProvider(
+class SearchMenuProvider(
 	private val activity: SearchActivity,
 	private val viewModel: SearchViewModel,
-	private val query: String,
-	private val kind: SearchKind,
 ) : MenuProvider {
 
 	override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -23,7 +21,7 @@ class SearchKindMenuProvider(
 	override fun onPrepareMenu(menu: Menu) {
 		super.onPrepareMenu(menu)
 		menu.findItem(
-			when (kind) {
+			when (viewModel.kind) {
 				SearchKind.SIMPLE -> R.id.action_kind_simple
 				SearchKind.TITLE -> R.id.action_kind_title
 				SearchKind.AUTHOR -> R.id.action_kind_author
@@ -54,9 +52,9 @@ class SearchKindMenuProvider(
 			R.id.action_kind_tag -> SearchKind.TAG
 			else -> return false
 		}
-		if (newKind != kind) {
+		if (newKind != viewModel.kind) {
 			activity.router.openSearch(
-				query = query,
+				query = viewModel.query,
 				kind = newKind,
 			)
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
