@@ -884,4 +884,7 @@
     <string name="private_app_directory_warning">Uygulamayı kaldırırsanız, bu dizin ve içindeki tüm veriler silinecektir</string>
     <string name="available_pattern">%1$s var</string>
     <string name="frequency_every_6_hours">6 saatte bir</string>
+    <string name="pinned_sources_only">Yalnızca sabitlenen kaynaklar</string>
+    <string name="hide_empty_sources">Boş kaynakları gizle</string>
+    <string name="auto_double_foldable">Otomatik İki Sayfa Katlanabilir</string>
 </resources>
