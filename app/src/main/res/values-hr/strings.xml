@@ -879,4 +879,6 @@
     <string name="download_default_directory">Standardni direktorij za preuzimanje manga</string>
     <string name="private_app_directory_warning">Ako deinstaliraš aplikaciju, ovaj će se direktorij izbrisati sa svim podacima</string>
     <string name="available_pattern">%1$s dostupno</string>
+    <string name="pinned_sources_only">Samo prikvačeni izvori</string>
+    <string name="hide_empty_sources">Sakrij prazne izvore</string>
 </resources>
