@@ -883,4 +883,6 @@
     <string name="download_default_directory">Direktori default untuk mengunduh manga</string>
     <string name="private_app_directory_warning">Direktori ini beserta semua datanya akan dihapus jika Anda menghapus aplikasi</string>
     <string name="available_pattern">%1$s tersedia</string>
+    <string name="pinned_sources_only">Hanya sumber yang disematkan</string>
+    <string name="hide_empty_sources">Sembunyikan sumber kosong</string>
 </resources>

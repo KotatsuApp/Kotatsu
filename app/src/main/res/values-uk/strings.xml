@@ -880,4 +880,11 @@
     <string name="data_removal">Вилучення даних</string>
     <string name="privacy">Конфіденційність</string>
     <string name="source_broken_warning">Це джерело манги позначено як непрацююче. Деякі функції можуть не працювати</string>
+    <string name="frequency_every_6_hours">Кожні 6 годин</string>
+    <string name="download_default_directory">Каталог за замовчуванням для завантаження манги</string>
+    <string name="private_app_directory_warning">Цей каталог з усіма даними буде видалено, якщо ви видалите програму</string>
+    <string name="available_pattern">Доступно %1$s</string>
+    <string name="auto_double_foldable">Автоматичне двосторінкове розміщення на складному</string>
+    <string name="pinned_sources_only">Тільки закріплені джерела</string>
+    <string name="hide_empty_sources">Приховати порожні джерела</string>
 </resources>
