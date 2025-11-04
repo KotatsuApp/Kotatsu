@@ -6,19 +6,15 @@
 
 # [Kotatsu](https://kotatsu.app)
 
-**[Kotatsu](https://github.com/KotatsuApp/Kotatsu) is a free and open-source manga reader for Android with built-in online content sources.**
+**[Kotatsu](https://github.com/KotatsuApp/Kotatsu) is a free and open-source manga reader for Android with built-in
+online content sources.**
 
-![Downloads count](https://img.shields.io/github/downloads/KotatsuApp/Kotatsu/total?color=1976d2) ![Latest Stable version](https://img.shields.io/github/v/release/KotatsuApp/Kotatsu?color=2596be&label=latest) ![Android 6.0](https://img.shields.io/badge/android-6.0+-brightgreen) [![Sources count](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FKotatsuApp%2Fkotatsu-parsers%2Frefs%2Fheads%2Fmaster%2F.github%2Fsummary.yaml&query=total&label=manga%20sources&color=%23E9321C)](https://github.com/KotatsuApp/kotatsu-parsers) [![weblate](https://hosted.weblate.org/widgets/kotatsu/-/strings/svg-badge.svg)](https://hosted.weblate.org/engage/kotatsu/) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5) [![Telegram](https://img.shields.io/badge/chat-telegram-60ACFF?)](https://t.me/kotatsuapp) [![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu)](https://github.com/KotatsuApp/Kotatsu/blob/devel/LICENSE)
+> [!IMPORTANT]
+> In light of recent challenges — including threating actions from Kakao Entertainment Corp and upcoming Google’s 
+> [new sideloading policy](https://f-droid.org/ru/2025/10/28/sideloading.html) — we’ve made the difficult decision to shut down Kotatsu and end its support. We’re deeply grateful
+> to everyone who contributed and to the amazing community that grew around this project.
 
-### Download
-
-<div align="left">
-
-* **Recommended:** Download and install APK from [GitHub Releases](https://github.com/KotatsuApp/Kotatsu/releases/latest). Application has a built-in self-updating feature.
-* Get it on [F-Droid](https://f-droid.org/packages/org.koitharu.kotatsu). The F-Droid build may be a bit outdated and some fixes might be missing.
-* Also [nightly builds](https://github.com/KotatsuApp/Kotatsu-nightly/releases) are available (Unstable, use at your own risk). Application has a built-in self-updating feature.
-
-</div>
+![Android 6.0](https://img.shields.io/badge/android-6.0+-brightgreen) [![Sources count](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FKotatsuApp%2Fkotatsu-parsers%2Frefs%2Fheads%2Fmaster%2F.github%2Fsummary.yaml&query=total&label=manga%20sources&color=%23E9321C)](https://github.com/KotatsuApp/kotatsu-parsers) [![weblate](https://hosted.weblate.org/widgets/kotatsu/-/strings/svg-badge.svg)](https://hosted.weblate.org/engage/kotatsu/) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5) [![Telegram](https://img.shields.io/badge/chat-telegram-60ACFF?)](https://t.me/kotatsuapp) [![License](https://img.shields.io/github/license/KotatsuApp/Kotatsu)](https://github.com/KotatsuApp/Kotatsu/blob/devel/LICENSE)
 
 ### Main Features
 
@@ -86,7 +82,8 @@ please head over to the [Weblate project page](https://hosted.weblate.org/engage
 
 </br>
 
-**📌 Pull requests are welcome, if you want: See [CONTRIBUTING.md](https://github.com/KotatsuApp/Kotatsu/blob/devel/CONTRIBUTING.md) for the guidelines**
+**📌 Pull requests are welcome, if you want:
+See [CONTRIBUTING.md](https://github.com/KotatsuApp/Kotatsu/blob/devel/CONTRIBUTING.md) for the guidelines**
 
 ### Certificate fingerprints
 
@@ -104,7 +101,9 @@ please head over to the [Weblate project page](https://hosted.weblate.org/engage
 
 <div align="left">
 
-You may copy, distribute and modify the software as long as you track changes/dates in source files. Any modifications to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build & install instructions.
+You may copy, distribute and modify the software as long as you track changes/dates in source files. Any modifications
+to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build &
+install instructions.
 
 </div>
 
@@ -112,6 +111,9 @@ You may copy, distribute and modify the software as long as you track changes/da
 
 <div align="left">
 
-The developers of this application do not have any affiliation with the content available in the app and does not store or distribute any content. This application should be considered a web browser, all content that can be found using this application is freely available on the Internet. All DMCA takedown requests should be sent to the owners of the website where the content is hosted.
+The developers of this application do not have any affiliation with the content available in the app and does not store
+or distribute any content. This application should be considered a web browser, all content that can be found using this
+application is freely available on the Internet. All DMCA takedown requests should be sent to the owners of the website
+where the content is hosted.
 
 </div>
